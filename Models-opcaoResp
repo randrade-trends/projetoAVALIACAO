@@ -1,0 +1,27 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ProjetoAVALIACAO.Models
+{
+    public class opcaoResp
+    {
+        decimal opr_id_opcao_resposta { get; set; }
+        decimal opr_id_pergunta { get; set; }
+
+       String  opr_ds_opcao_resposta {get; set;}
+
+        char opr_ch_resposta_correta { get; set; }
+        int opr_nu_ordem { get; set; }
+
+        public opcaoResp(decimal idOpcaoResp, decimal idOprPerg, String dsOpcaoResp, char chRespCorrect,int nuOrdem )
+        {
+            opr_id_opcao_resposta = idOpcaoResp;
+            opr_id_pergunta = idOprPerg;
+            opr_ds_opcao_resposta = dsOpcaoResp;
+            opr_ch_resposta_correta = chRespCorrect;
+            opr_nu_ordem = nuOrdem;
+        }
+    }
+}
