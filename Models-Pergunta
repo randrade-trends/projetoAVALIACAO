@@ -1,0 +1,32 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ProjetoAVALIACAO.Models
+{
+    public class Pergunta
+    {
+
+        decimal per_id_pergunta { get; set; }
+        decimal per_id_questionario { get; set; }
+
+        String per_ds_pergunta { get; set; }
+
+        char per_tp_pergunta { get; set; }
+        char per_ch_resposta_obrigatoria { get; set; }
+        int per_nu_ordem { get; set; }
+
+        public Pergunta(decimal IdPer, decimal idPerQuestio, String dspergunta, char TipoPer, char perResp, int nuOrdem)
+        {
+            per_id_pergunta = IdPer;
+            per_id_questionario = idPerQuestio;
+            per_ds_pergunta = dspergunta;
+            per_tp_pergunta = TipoPer;
+            per_ch_resposta_obrigatoria = perResp;
+            per_nu_ordem = nuOrdem;
+
+        }
+
+    }
+}
