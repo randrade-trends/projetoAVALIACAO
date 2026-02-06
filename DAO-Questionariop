@@ -1,0 +1,142 @@
+using ProjetoAVALIACAO.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+
+namespace ProjetoAVALIACAO.DAO
+{
+    public class QuestionarioDAO
+    {
+        SqlCommand ioQuery;
+        SqlConnection ioConexao;
+
+        public BindingList<Questionario> BuscaQuestionario(decimal? questId = null)
+        {
+            BindingList<Questionario> listaQuestionario = new BindingList<Questionario>();
+
+            using (ioConexao = new SqlConnection(
+            ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                try
+                {
+                    ioConexao.Open();
+                    if (questId != null)
+                    {
+                        ioQuery = new SqlCommand(
+                       "SELECT * FROM  QST_QUESTIONARIO_RAFHAFIGUE WHERE qustId = @idQuest", ioConexao);
+                        ioQuery.Parameters.AddWithValue("@idQuest", questId);
+                    }
+                    else if{
+                        ioQuery = new SqlCommand("SELECT * QST_QUESTIONARIO_RAFHAFIGUE", ioConexao);
+                    }
+                    using (SqlDataReader reader = ioQuery.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            listaQuestionario.Add(new Questionario(
+                                reader.GetDecimal(0),
+                                reader.GetString(1),
+                                reader.GetChar(2),
+                                reader.GetString(3)));
+                        }
+                    }
+                }
+                catch
+                {
+                    throw new Exception("Erro ao tentar buscar o(s) Qustionarios.");
+                }
+
+
+
+            }
+            return listaQuestionario;
+
+            public int InsereAutor(Questionario questionario)
+        {
+            if (questionario == null)
+                throw new ArgumentNullException();
+
+            using (ioConexao = new SqlConnection(
+            ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                ioConexao.Open();
+
+                ioQuery = new SqlCommand(
+                    @"INSERT INTO QST_QUESTIONARIO_RAFHAFIGUE
+                    (qst_id_questionario, qst_nm_questionario,
+                        qst_tp_questionario, qst_ds_link_instrucoes )VALUES (@idQuest, @nmQuest, @tipoQuest, @dsInstrucoes)", ioConexao);
+
+                ioQuery.Parameters.AddWithValue("@idQuest", questionario.qst_id_questionario);
+                ioQuery.Parameters.AddWithValue("@nmQuest", questionario.qst_nm_questionario);
+                ioQuery.Parameters.AddWithValue("@tipoQuest", questionario.qst_tp_questionario);
+                ioQuery.Parameters.AddWithValue("@dsInstrucoes", questionario.qst_ds_link_instrucoes);
+
+                return ioQuery.ExecuteNonQuery();
+
+
+
+
+
+            }
+
+
+        }
+
+        public int RemoveQuestionario(Questionario questionario)
+        {
+            if (questionario == null)
+                throw new ArgumentNullException();
+
+            using (ioConexao = new SqlConnection(
+                ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                ioConexao.Open();
+
+                ioQuery = new SqlCommand(
+                    "DELETE FROM QST_QUESTIONARIO_RAFHAFIGUE WHERE qst_id_questionario = @idQuest", ioConexao);
+
+                ioQuery.Parameters.AddWithValue("@idQuest", questionario.qst_id_questionario);
+
+                return ioQuery.ExecuteNonQuery();
+            }
+        }
+
+
+        public int AtualizarQuestionario(Questionario questionario)
+        {
+            if (questionario == null)
+                throw new ArgumentNullException();
+
+            using (ioConexao = new SqlConnection(
+                ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                ioConexao.Open();
+
+                ioQuery = new SqlCommand(
+                    @"UPDATE QST_QUESTIONARIO_RAFHAFIGUE
+                  SET qst_nm_questionario = @nmQuest,
+                     qst_tp_questionario  = @tipoQuest,
+                      qst_ds_link_instrucoes =  @dsInstrucoes
+                  WHERE qst_id_questionario = @idQuest", ioConexao);
+
+                ioQuery.Parameters.AddWithValue("@idQuest", questionario.qst_id_questionario);
+                ioQuery.Parameters.AddWithValue("@nmQuest", questionario.qst_nm_questionario);
+                ioQuery.Parameters.AddWithValue("@tipoQuest", questionario.qst_tp_questionario);
+                ioQuery.Parameters.AddWithValue("@dsInstrucoes", questionario.qst_ds_link_instrucoes);
+                return ioQuery.ExecuteNonQuery();
+            }
+        }
+
+
+    }
+
+
+
+
+
+
+}
