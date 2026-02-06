@@ -1,0 +1,27 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
+namespace ProjetoAVALIACAO.Models
+{
+    public class Questionario
+    {
+        decimal qst_id_questionario { get; set; }
+        String qst_nm_questionario { get; set; }
+        char qst_tp_questionario { get; set; }
+
+       String  qst_ds_link_instrucoes {get; set;}
+
+        public Questionario(decimal questId, String nomeQuest, char tipoQuest, String dsQuest)
+        {
+            qst_id_questionario = questId;
+            qst_nm_questionario = nomeQuest;
+            qst_tp_questionario = tipoQuest;
+            qst_ds_link_instrucoes = dsQuest;
+
+        }
+
+
+    }
+}
