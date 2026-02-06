@@ -1,0 +1,152 @@
+using ProjetoAVALIACAO.Models;
+using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Configuration;
+using System.Data.SqlClient;
+using System.Linq;
+using System.Web;
+
+namespace ProjetoAVALIACAO.DAO
+{
+    public class PerguntaDAO
+    {
+        SqlCommand ioQuery;
+        SqlConnection ioConexao;
+
+        public BindingList<Pergunta> BuscaPergunta(decimal? IdPer= null)
+        {
+            BindingList<Pergunta> listaPergunta = new BindingList<Pergunta>();
+
+            using (ioConexao = new SqlConnection(
+            ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                try
+                {
+                    ioConexao.Open();
+                    if (IdPer!= null)
+                    {
+                        ioQuery = new SqlCommand(
+                       "SELECT * FROM  PER_PERGUNTA_RAFHAFIGUE WHERE IdPer = @idPer", ioConexao);
+                        ioQuery.Parameters.AddWithValue("@idPer", IdPer);
+                    }
+                    else if{
+                        ioQuery = new SqlCommand("SELECT * PER_PERGUNTA_RAFHAFIGUE", ioConexao);
+                    }
+                    using (SqlDataReader reader = ioQuery.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            listaPergunta.Add(new Pergunta(
+                                reader.GetDecimal(0),
+                                reader.GetDecimal(1),
+                                reader.GetString(2),
+                                reader.GetChar(3),
+                                reader.GetChar(4),
+                                reader.GetInt32(5)));
+                        }
+                    }
+                }
+                catch
+                {
+                    throw new Exception("Erro ao tentar buscar o(s) Qustionarios.");
+                }
+
+
+
+            }
+            return listaPergunta;
+
+            public int InserePergunta(Pergunta pergunta)
+        {
+            if (pergunta == null)
+                throw new ArgumentNullException();
+
+            using (ioConexao = new SqlConnection(
+            ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                ioConexao.Open();
+
+                ioQuery = new SqlCommand(
+                    @"INSERT INTO PER_PERGUNTA_RAFHAFIGUE
+                    (per_id_pergunta, per_id_questionario,
+                         per_ds_pergunta, per_tp_pergunta, per_ch_resposta_obrigatoria,  per_nu_ordem  )VALUES (@IdPer, @idPerQuestio, @dspergunta, @TipoPer, @perResp, @nuOrdem)", ioConexao);
+
+                ioQuery.Parameters.AddWithValue("@IdPer", pergunta.per_id_pergunta);
+                ioQuery.Parameters.AddWithValue("@idPerQuestio", pergunta.per_id_questionario);
+                ioQuery.Parameters.AddWithValue("@dspergunta", pergunta.per_ds_pergunta);
+                ioQuery.Parameters.AddWithValue("@TipoPer", pergunta.per_tp_pergunta);
+                ioQuery.Parameters.AddWithValue("@perResp", pergunta.per_ch_resposta_obrigatoria);
+                ioQuery.Parameters.AddWithValue("@nuOrdem", pergunta.per_nu_ordem);
+
+                return ioQuery.ExecuteNonQuery();
+
+
+
+
+
+            }
+
+
+        }
+
+        public int RemovePergunta(Pergunta pergunta)
+        {
+            if (pergunta == null)
+                throw new ArgumentNullException();
+
+            using (ioConexao = new SqlConnection(
+                ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                ioConexao.Open();
+
+                ioQuery = new SqlCommand(
+                    "DELETE FROM PER_PERGUNTA_RAFHAFIGUE WHERE per_id_pergunta = @IdPer", ioConexao);
+
+                ioQuery.Parameters.AddWithValue("@IdPer", pergunta.per_id_pergunta);
+
+                return ioQuery.ExecuteNonQuery();
+            }
+        }
+
+
+        public int AtualizarPergunta(Pergunta pergunta)
+        {
+            if (pergunta == null)
+                throw new ArgumentNullException();
+
+            using (ioConexao = new SqlConnection(
+                ConfigurationManager.ConnectionStrings["ConnectionString"].ConnectionString))
+            {
+                ioConexao.Open();
+
+                ioQuery = new SqlCommand(
+                    @"UPDATE PER_PERGUNTA_RAFHAFIGUE
+                  SET per_id_questionario = @idPerQuestionario,
+                     per_ds_pergunta  = @dspergunta,
+                      per_tp_pergunta =  @TipoPer
+                      per_ch_resposta_obrigatoria = @perResp
+                     per_nu_ordem = @nuOrdem
+                  WHERE per_id_pergunta = @IdPer", ioConexao);
+
+
+                ioQuery.Parameters.AddWithValue("@IdPer", pergunta.per_id_pergunta);
+                ioQuery.Parameters.AddWithValue("@idPerQuestio", pergunta.per_id_questionario);
+                ioQuery.Parameters.AddWithValue("@dspergunta", pergunta.per_ds_pergunta);
+                ioQuery.Parameters.AddWithValue("@TipoPer", pergunta.per_tp_pergunta);
+                ioQuery.Parameters.AddWithValue("@perResp", pergunta.per_ch_resposta_obrigatoria);
+                ioQuery.Parameters.AddWithValue("@nuOrdem", pergunta.per_nu_ordem);
+
+                return ioQuery.ExecuteNonQuery();
+            }
+        }
+
+
+    }
+
+
+
+
+
+
+}
